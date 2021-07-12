@@ -2,7 +2,7 @@
 #include <memory.h>
 #include <stdlib.h>
 #include <string.h>
-
+//20210712
 #pragma warning(disable: 4996)
 #define MAX_NAME 20   //이름 길이
 #define MAX_SUBJECT 4 // 최대 과목수
