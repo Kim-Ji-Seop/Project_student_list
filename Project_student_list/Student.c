@@ -1,8 +1,7 @@
 #include <stdio.h>
-#include <memory.h>
 #include <stdlib.h>
 #include <string.h>
-//20210712
+//20210713
 #pragma warning(disable: 4996)
 #define MAX_NAME 20   // 이름 길이
 #define MAX_SUBJECT 4 // 최대 과목수
@@ -19,6 +18,8 @@ typedef struct Student
 Student* head, * tail;
 
 char* title[MAX_SUBJECT] = { "프로그래밍", "데이터사이언스", "공업수학", "논리회로및실험" };
+//포인터 배열선언 , 각 인덱스마다 하나의 문자가 아니라 문자열의 형태로 저장하기 위함.
+//각 포인터들의 배열이라고 생각하면된다.
 
 void Initialize(); //초기화
 void Run();
@@ -33,11 +34,11 @@ int main(void)
 }
 void Initialize()
 {
-	head = (Student*)malloc(sizeof(Student));
-	tail = (Student*)malloc(sizeof(Student));
-	head->next = tail;
+	head = (Student*)malloc(sizeof(Student));//양방향연결리스트 head
+	tail = (Student*)malloc(sizeof(Student));//tail
+	head->next = tail;//head->tail
 	head->prev = head;
-	tail->next = tail;
+	tail->next = tail;//head<-tail
 	tail->prev = head;
 }
 void AddData();
@@ -76,7 +77,7 @@ void Run()
 }
 int SelectMenu()
 {
-	int key = 0;
+	int key;
 	printf("---------------------------------------메뉴 선택-----------------------------------------------\n");
 	printf("1. 학생 데이터 등록  2. 학생 데이터 삭제  3. 학생 데이터 검색  4. 학생 데이터 목록 출력  (0. 종료)\n");
 	printf("=>");
@@ -101,7 +102,7 @@ void AddData()
 	}
 	Student* cur = head->next;
 	while (cur != tail)
-	{ //오름차순 , 끝을 넘어가지 않도록
+	{ //끝을 넘어가지 않도록
 		cur = cur->next;
 	}
 	Student* prev = cur->prev;
@@ -112,21 +113,23 @@ void AddData()
 }
 void DeleteData()
 {
-	int num;
-	scanf("%d", &num);
+	int number;
+	printf("삭제할 학생의 번호를 입력하시오: ");
+	scanf("%d", &number);
 	Student* cur = head->next;
 
 	for (cur; cur != tail; cur = cur->next)
 	{
-		if (cur->num == num)
+		if (cur->num == number)
 		{
 			cur->prev->next = cur->next;
 			cur->next->prev = cur->prev;
 			free(cur);
 			printf("삭제완료\n");
+			return;
 		}
 	}
-	printf("해당 데이터가 없습니다.\n");
+
 }
 void SearchData()
 {
@@ -166,13 +169,14 @@ void ListData()
 		printf("%10s ", cur->name);
 		for (int i = 0; i < MAX_SUBJECT; i++)
 		{
-			printf("%8d ", cur->scores[i]);
+			printf("%10d ", cur->scores[i]);
 		}
 		printf("\n");
 	}
 }
 void Exit() {
 	Student* cur = head;
+
 	while (cur->next && cur != tail) {
 		cur = cur->next;
 		free(cur->prev);
